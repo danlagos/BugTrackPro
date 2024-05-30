@@ -40,7 +40,7 @@
 export default {
   data() {
     return {
-      userType: '',
+      userType: 'Technician',
       stats: {
         totalBugs: 0,
         openBugs: 0,
@@ -77,6 +77,7 @@ export default {
     }
   },
   mounted() {
+    console.log('User type:', this.userType) // Log userType
     this.fetchStats()
     this.fetchRecentBugs()
     if (this.userType === 'Administrator' || this.userType === 'Technician') {
@@ -88,16 +89,41 @@ export default {
   },
   methods: {
     fetchStats() {
-      // Implement the API call to fetch stats
+      // Simulate an API call
+      setTimeout(() => {
+        const response = { data: { totalBugs: 50, openBugs: 20, closedBugs: 30 } }
+        this.stats = response.data
+        console.log('Stats:', this.stats) // Log fetched stats
+      }, 1000)
     },
     fetchRecentBugs() {
-      // Implement the API call to fetch recent bugs
+      // Simulate an API call
+      setTimeout(() => {
+        const response = {
+          data: [
+            { id: 1, details: 'Bug 1' },
+            { id: 2, details: 'Bug 2' }
+          ]
+        }
+        this.recentBugs = response.data
+        console.log('Recent Bugs:', this.recentBugs) // Log fetched recent bugs
+      }, 1000)
     },
     fetchPendingAssignments() {
-      // Implement the API call to fetch pending assignments
+      // Simulate an API call
+      setTimeout(() => {
+        const response = { data: [{ id: 1, details: 'Pending Bug 1' }] }
+        this.pendingAssignments = response.data
+        console.log('Pending Assignments:', this.pendingAssignments) // Log fetched pending assignments
+      }, 1000)
     },
     fetchAssignedBugs() {
-      // Implement the API call to fetch assigned bugs
+      // Simulate an API call
+      setTimeout(() => {
+        const response = { data: [{ id: 1, details: 'Assigned Bug 1' }] }
+        this.assignedBugs = response.data
+        console.log('Assigned Bugs:', this.assignedBugs) // Log fetched assigned bugs
+      }, 1000)
     }
   }
 }
