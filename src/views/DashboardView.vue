@@ -2,9 +2,20 @@
   <div class="dashboard-view">
     <section class="stats">
       <h2>Dashboard</h2>
-      <p>Total Bugs: {{ stats.totalBugs }}</p>
-      <p>Open Bugs: {{ stats.openBugs }}</p>
-      <p>Closed Bugs: {{ stats.closedBugs }}</p>
+      <div class="stats-block">
+        <div class="stat">
+          <p>Total Bugs</p>
+          <p>{{ stats.totalBugs }}</p>
+        </div>
+        <div class="stat">
+          <p>Open Bugs</p>
+          <p>{{ stats.openBugs }}</p>
+        </div>
+        <div class="stat">
+          <p>Closed Bugs</p>
+          <p>{{ stats.closedBugs }}</p>
+        </div>
+      </div>
     </section>
 
     <section class="role-specific-data">
@@ -40,7 +51,7 @@
 export default {
   data() {
     return {
-      userType: 'Technician',
+      userType: 'Technician', // Example: Set this based on your authentication logic
       stats: {
         totalBugs: 0,
         openBugs: 0,
@@ -53,27 +64,30 @@ export default {
   },
   computed: {
     userRoleSpecificData() {
+      let result = {}
       if (this.userType === 'Employee') {
-        return {
+        result = {
           title: 'Your Submitted Bugs',
           data: this.recentBugs
         }
       } else if (this.userType === 'Administrator') {
-        return {
+        result = {
           title: 'Pending Bug Assignments',
           data: this.pendingAssignments
         }
       } else if (this.userType === 'Technician') {
-        return {
+        result = {
           title: 'Your Assigned Bugs',
           data: this.assignedBugs
         }
       } else {
-        return {
+        result = {
           title: '',
           data: []
         }
       }
+      console.log('Computed userRoleSpecificData:', result) // Log computed property output
+      return result
     }
   },
   mounted() {
@@ -88,42 +102,41 @@ export default {
     }
   },
   methods: {
-    fetchStats() {
-      // Simulate an API call
-      setTimeout(() => {
-        const response = { data: { totalBugs: 50, openBugs: 20, closedBugs: 30 } }
+    async fetchStats() {
+      try {
+        const response = await axios.get('/api/stats')
         this.stats = response.data
         console.log('Stats:', this.stats) // Log fetched stats
-      }, 1000)
+      } catch (error) {
+        console.error('Failed to fetch stats:', error)
+      }
     },
-    fetchRecentBugs() {
-      // Simulate an API call
-      setTimeout(() => {
-        const response = {
-          data: [
-            { id: 1, details: 'Bug 1' },
-            { id: 2, details: 'Bug 2' }
-          ]
-        }
+    async fetchRecentBugs() {
+      try {
+        const response = await axios.get('/api/bugs/recent')
         this.recentBugs = response.data
         console.log('Recent Bugs:', this.recentBugs) // Log fetched recent bugs
-      }, 1000)
+      } catch (error) {
+        console.error('Failed to fetch recent bugs:', error)
+      }
     },
-    fetchPendingAssignments() {
-      // Simulate an API call
-      setTimeout(() => {
-        const response = { data: [{ id: 1, details: 'Pending Bug 1' }] }
+    async fetchPendingAssignments() {
+      try {
+        const response = await axios.get('/api/assignments/pending')
         this.pendingAssignments = response.data
         console.log('Pending Assignments:', this.pendingAssignments) // Log fetched pending assignments
-      }, 1000)
+      } catch (error) {
+        console.error('Failed to fetch pending assignments:', error)
+      }
     },
-    fetchAssignedBugs() {
-      // Simulate an API call
-      setTimeout(() => {
-        const response = { data: [{ id: 1, details: 'Assigned Bug 1' }] }
+    async fetchAssignedBugs() {
+      try {
+        const response = await axios.get('/api/bugs/assigned')
         this.assignedBugs = response.data
         console.log('Assigned Bugs:', this.assignedBugs) // Log fetched assigned bugs
-      }, 1000)
+      } catch (error) {
+        console.error('Failed to fetch assigned bugs:', error)
+      }
     }
   }
 }
@@ -140,9 +153,38 @@ export default {
 .dashboard-view h2 {
   color: #333;
   margin-bottom: 20px;
+  text-align: center;
 }
 
-.dashboard-view .stats,
+.dashboard-view .stats {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-view .stats-block {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.dashboard-view .stat {
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  flex: 1;
+}
+
+.dashboard-view .stat p {
+  margin: 0;
+  font-size: 18px;
+  color: #555;
+}
+
 .dashboard-view .role-specific-data,
 .dashboard-view .recent-bugs,
 .dashboard-view .assigned-bugs {
@@ -154,18 +196,12 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-view .stats p,
 .dashboard-view .role-specific-data ul,
 .dashboard-view .recent-bugs ul,
 .dashboard-view .assigned-bugs ul {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.dashboard-view .stats p {
-  font-size: 18px;
-  color: #555;
 }
 
 .dashboard-view .role-specific-data h3,
